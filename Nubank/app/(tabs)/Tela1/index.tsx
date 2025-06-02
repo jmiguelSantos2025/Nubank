@@ -17,19 +17,19 @@ const { width: LarguraTelaSAJ } = Dimensions.get("window");
 const { height: AlturaTelaSAJ } = Dimensions.get("window");
 const FontScaleSAJ = (size: number) => (LarguraTelaSAJ / 375) * size;
 export default function Tela1() {
-  const [saldo, setSaldo] = useState(2000);
-  const [valorPix, setValorPix] = useState("");
-  const [mostrarInput, setMostrarInput] = useState(false);
+  const [saldoSAJ, setSaldoSAJ] = useState(2000);
+  const [valorPixSAJ, setValorPixSAJ] = useState("");
+  const [mostrarInputSAJ, setMostrarInputSAJ] = useState(false);
 
   const [VisibleSAJ, setVisibleSAJ] = useState<Boolean>(false);
 
-  const PixAction = () => {
-    const valor = Number(valorPix);
+  const PixActionSAJ = () => {
+    const valorSAJ = Number(valorPixSAJ);
 
-    if (valor > 0 && valor <= saldo) {
-      setSaldo(saldo - valor);
-      setValorPix("");
-      setMostrarInput(false);
+    if (valorSAJ > 0 && valorSAJ <= saldoSAJ) {
+      setSaldoSAJ(saldoSAJ - valorSAJ);
+      setValorPixSAJ("");
+      setMostrarInputSAJ(false);
     } else {
       alert("Saldo insuficiente!");
     }
@@ -63,7 +63,7 @@ export default function Tela1() {
           >
             <TouchableOpacity onPress={() => setVisibleSAJ(!VisibleSAJ)}>
               <MaterialCommunityIcons
-                name={VisibleSAJ ? "eye-outline" : "eye-off-outline"}
+                name={VisibleSAJ ? "eye-off-outline" : "eye-outline"}
                 style={styles.BotaoIcon}
               />
             </TouchableOpacity>
@@ -82,7 +82,7 @@ export default function Tela1() {
           </View>
         </View>
         <View style={styles.viewTextTop}>
-          <Text style={styles.textTop}>Olá, Usuário</Text>
+          <Text style={styles.textTop}>Olá, Professor Gabriel</Text>
         </View>
       </View>
 
@@ -93,7 +93,7 @@ export default function Tela1() {
 
         <View style={styles.viewSaldo}>
           {VisibleSAJ ? (
-            <Text style={styles.saldo}>R${saldo},0</Text>
+            <Text style={styles.saldo}>R${saldoSAJ.toFixed(2)}</Text>
           ) : (
             <View
               style={{
@@ -108,7 +108,7 @@ export default function Tela1() {
 
         <View style={styles.viewButtons}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <TouchableOpacity style={styles.button} onPress={()=>setMostrarInput(true)}>
+            <TouchableOpacity style={styles.button} onPress={()=>setMostrarInputSAJ(true)}>
               <Feather name="dollar-sign" size={24} color="#810AD0" />
               <Text style={styles.buttonText}>Área Pix</Text>
             </TouchableOpacity>
@@ -132,7 +132,7 @@ export default function Tela1() {
           <Text style={styles.textMyCards}>Meus cartões</Text>
         </View>
 
-{mostrarInput && (
+{mostrarInputSAJ && (
         <View style={styles.inputContainer}>
           <Text style={styles.label}>Digite o valor do Pix:</Text>
           <View style={styles.inputBox}>
@@ -142,17 +142,17 @@ export default function Tela1() {
               placeholderTextColor="#999"
               keyboardType="numeric"
               style={styles.input}
-              value={valorPix}
-              onChangeText={setValorPix}
+              value={valorPixSAJ}
+              onChangeText={setValorPixSAJ}
             />
           </View>
           <View style={{ flexDirection: "row", gap: 10 }}>
-            <TouchableOpacity style={styles.botaoPix} onPress={PixAction}>
+            <TouchableOpacity style={styles.botaoPix} onPress={PixActionSAJ}>
               <Text style={styles.textoBotaoPix}>Confirmar</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.botaoCancelar}
-              onPress={() => setMostrarInput(false)}
+              onPress={() => setMostrarInputSAJ(false)}
             >
               <Text style={styles.textoBotaoCancelar}>Cancelar</Text>
             </TouchableOpacity>
