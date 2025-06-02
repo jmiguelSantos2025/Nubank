@@ -1,7 +1,11 @@
-import MainScreen from "../app/MainScreen";
+import { Redirect, router, Stack, Tabs } from "expo-router";
 
 export default function Layout() {
  return (
-   <MainScreen/>
+  <Stack screenOptions={{headerShown:false}}>
+    <Stack.Screen name="(tabs)"/>
+    
+
+  </Stack>
   );
 }

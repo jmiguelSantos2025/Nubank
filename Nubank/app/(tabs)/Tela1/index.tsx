@@ -11,8 +11,11 @@ import {
   MaterialCommunityIcons,
   AntDesign,
 } from "@expo/vector-icons";
+import { useState } from "react";
+import { router } from "expo-router";
 
-export default function MainScreen() {
+export default function Tela1() {
+  const [VisibleSAJ,setVisibleSAJ] = useState<Boolean>(false);
   return (
     <ScrollView style={styles.container}>
       <View style={styles.firstPierce}>
@@ -22,10 +25,18 @@ export default function MainScreen() {
             style={{
               flexDirection: "row",
               justifyContent: "space-between",
-              width: "20%",
+              width: "30%",
             }}
           >
-            <Feather name="eye" size={24} color="white" />
+            <TouchableOpacity >
+            <Feather name={VisibleSAJ?"eye-off" : "eye"} size={24} color="white"  onPress={()=>  setVisibleSAJ(!VisibleSAJ)}/>
+            </TouchableOpacity>
+            <MaterialCommunityIcons
+              name="help-circle-outline"
+              size={24}
+              color="white"
+              onPress={()=>router.push("MeAjuda/")}
+            />  
             <MaterialCommunityIcons
               name="email-outline"
               size={24}
@@ -44,7 +55,10 @@ export default function MainScreen() {
         </View>
 
         <View style={styles.viewSaldo}>
-          <Text style={styles.saldo}>R$ 1.234,56</Text>
+          {VisibleSAJ ? (<Text style={styles.saldo}>R$ 1.234,56</Text>) : (
+            <View style={{width:120,height:30,backgroundColor:"#ccc", borderRadius:4}}/>      
+            )}
+          
         </View>
 
         <View style={styles.viewButtons}>
@@ -102,7 +116,7 @@ export default function MainScreen() {
               <View style={styles.cardBottom}>
                 <View style={styles.cardImageContainer}>
                   <Image
-                    source={require("../../assets/UserPortality.png")}
+                    source={require("../../../assets/UserPortality.png")}
                     style={styles.cardImage}
                   />
                 </View>
@@ -124,7 +138,7 @@ export default function MainScreen() {
               <View style={styles.cardBottom}>
                 <View style={styles.cardImageContainer}>
                   <Image
-                    source={require("../../assets/UserPortality.png")}
+                    source={require("../../../assets/UserPortality.png")}
                     style={styles.cardImage}
                   />
                 </View>
@@ -144,7 +158,7 @@ export default function MainScreen() {
               <View style={styles.cardBottom}>
                 <View style={styles.cardImageContainer}>
                   <Image
-                    source={require("../../assets/UserPortality.png")}
+                    source={require("../../../assets/UserPortality.png")}
                     style={styles.cardImage}
                   />
                 </View>
