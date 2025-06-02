@@ -5,43 +5,80 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
+  Pressable,
+  Dimensions,
+  TextInput,
 } from "react-native";
-import {
-  Feather,
-  MaterialCommunityIcons,
-  AntDesign,
-} from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
 import { useState } from "react";
 import { router } from "expo-router";
 
+const { width: LarguraTelaSAJ } = Dimensions.get("window");
+const { height: AlturaTelaSAJ } = Dimensions.get("window");
+const FontScaleSAJ = (size: number) => (LarguraTelaSAJ / 375) * size;
 export default function Tela1() {
-  const [VisibleSAJ,setVisibleSAJ] = useState<Boolean>(false);
+  const [saldo, setSaldo] = useState(2000);
+  const [valorPix, setValorPix] = useState("");
+  const [mostrarInput, setMostrarInput] = useState(false);
+
+  const [VisibleSAJ, setVisibleSAJ] = useState<Boolean>(false);
+
+  const PixAction = () => {
+    const valor = Number(valorPix);
+
+    if (valor > 0 && valor <= saldo) {
+      setSaldo(saldo - valor);
+      setValorPix("");
+      setMostrarInput(false);
+    } else {
+      alert("Saldo insuficiente!");
+    }
+  };
+
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.firstPierce}>
-        <View style={styles.viewIcons}>
-          <Feather name="user" size={24} color="white" />
+      <View style={styles.Cabecalho}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            width: "100%",
+          }}
+        >
+          <Pressable style={({ pressed }) => [pressed && styles.Pressed]}>
+            <MaterialCommunityIcons
+              name="account-outline"
+              style={styles.PerfilIcon}
+            />
+          </Pressable>
+
           <View
             style={{
               flexDirection: "row",
-              justifyContent: "space-between",
-              width: "30%",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: 20,
             }}
           >
-            <TouchableOpacity >
-            <Feather name={VisibleSAJ?"eye-off" : "eye"} size={24} color="white"  onPress={()=>  setVisibleSAJ(!VisibleSAJ)}/>
+            <TouchableOpacity onPress={() => setVisibleSAJ(!VisibleSAJ)}>
+              <MaterialCommunityIcons
+                name={VisibleSAJ ? "eye-outline" : "eye-off-outline"}
+                style={styles.BotaoIcon}
+              />
             </TouchableOpacity>
-            <MaterialCommunityIcons
-              name="help-circle-outline"
-              size={24}
-              color="white"
-              onPress={()=>router.push("MeAjuda/")}
-            />  
-            <MaterialCommunityIcons
-              name="email-outline"
-              size={24}
-              color="white"
-            />
+            <TouchableOpacity onPress={() => router.push("MeAjuda")}>
+              <MaterialCommunityIcons
+                name="help-circle-outline"
+                style={styles.BotaoIcon}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <MaterialCommunityIcons
+                name="email-plus-outline"
+                style={styles.BotaoIcon}
+              />
+            </TouchableOpacity>
           </View>
         </View>
         <View style={styles.viewTextTop}>
@@ -55,15 +92,23 @@ export default function Tela1() {
         </View>
 
         <View style={styles.viewSaldo}>
-          {VisibleSAJ ? (<Text style={styles.saldo}>R$ 1.234,56</Text>) : (
-            <View style={{width:120,height:30,backgroundColor:"#ccc", borderRadius:4}}/>      
-            )}
-          
+          {VisibleSAJ ? (
+            <Text style={styles.saldo}>R${saldo},0</Text>
+          ) : (
+            <View
+              style={{
+                width: 120,
+                height: 30,
+                backgroundColor: "#ccc",
+                borderRadius: 4,
+              }}
+            />
+          )}
         </View>
 
         <View style={styles.viewButtons}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={styles.button} onPress={()=>setMostrarInput(true)}>
               <Feather name="dollar-sign" size={24} color="#810AD0" />
               <Text style={styles.buttonText}>Área Pix</Text>
             </TouchableOpacity>
@@ -86,6 +131,34 @@ export default function Tela1() {
           <AntDesign name="creditcard" size={18} color="black" />
           <Text style={styles.textMyCards}>Meus cartões</Text>
         </View>
+
+{mostrarInput && (
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Digite o valor do Pix:</Text>
+          <View style={styles.inputBox}>
+            <Text style={styles.cifrao}>R$</Text>
+            <TextInput
+              placeholder="0,00"
+              placeholderTextColor="#999"
+              keyboardType="numeric"
+              style={styles.input}
+              value={valorPix}
+              onChangeText={setValorPix}
+            />
+          </View>
+          <View style={{ flexDirection: "row", gap: 10 }}>
+            <TouchableOpacity style={styles.botaoPix} onPress={PixAction}>
+              <Text style={styles.textoBotaoPix}>Confirmar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.botaoCancelar}
+              onPress={() => setMostrarInput(false)}
+            >
+              <Text style={styles.textoBotaoCancelar}>Cancelar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
 
         <View style={styles.divider} />
 
@@ -127,11 +200,6 @@ export default function Tela1() {
                   <Text style={styles.cardDescription}>
                     Sua liberdade financeira começa com você escolhendo...
                   </Text>
-                  <TouchableOpacity style={[styles.buttonCreditCard, styles.cardButton]}>
-                    <Text style={styles.textButtonCreditCard}>
-                      Quero conhecer
-                    </Text>
-                  </TouchableOpacity>
                 </View>
               </View>
 
@@ -147,11 +215,6 @@ export default function Tela1() {
                   <Text style={styles.cardDescription}>
                     Descubra como fazer seu dinheiro trabalhar para você.
                   </Text>
-                  <TouchableOpacity style={[styles.buttonCreditCard, styles.cardButton]}>
-                    <Text style={styles.textButtonCreditCard}>
-                      Quero conhecer
-                    </Text>
-                  </TouchableOpacity>
                 </View>
               </View>
 
@@ -167,17 +230,13 @@ export default function Tela1() {
                   <Text style={styles.cardDescription}>
                     Simule e contrate empréstimos com as melhores taxas.
                   </Text>
-                  <TouchableOpacity style={[styles.buttonCreditCard, styles.cardButton]}>
-                    <Text style={[styles.textButtonCreditCard,{fontSize:10}]}>
-                      Quero conhecer
-                    </Text>
-                  </TouchableOpacity>
                 </View>
               </View>
             </ScrollView>
           </View>
         </View>
       </View>
+      
     </ScrollView>
   );
 }
@@ -219,6 +278,73 @@ const styles = StyleSheet.create({
   viewSaldo: {
     marginBottom: 20,
   },
+  inputContainer: {
+  backgroundColor: "#F0F1F5",
+  padding: 20,
+  borderRadius: 12,
+  marginBottom: 20,
+},
+
+label: {
+  fontSize: 16,
+  marginBottom: 10,
+  color: "#222",
+  fontWeight: "bold",
+},
+
+inputBox: {
+  flexDirection: "row",
+  alignItems: "center",
+  backgroundColor: "white",
+  borderRadius: 8,
+  borderWidth: 1,
+  borderColor: "#ccc",
+  paddingHorizontal: 10,
+  marginBottom: 10,
+},
+
+cifrao: {
+  fontSize: 18,
+  color: "#222",
+  marginRight: 4,
+},
+
+input: {
+  flex: 1,
+  fontSize: 18,
+  color: "#222",
+  paddingVertical: 8,
+},
+
+botaoPix: {
+  backgroundColor: "#810AD0",
+  paddingVertical: 10,
+  paddingHorizontal: 20,
+  borderRadius: 8,
+  flex: 1,
+  alignItems: "center",
+},
+
+textoBotaoPix: {
+  color: "white",
+  fontWeight: "bold",
+  fontSize: 16,
+},
+
+botaoCancelar: {
+  backgroundColor: "#ccc",
+  paddingVertical: 10,
+  paddingHorizontal: 20,
+  borderRadius: 8,
+  flex: 1,
+  alignItems: "center",
+},
+
+textoBotaoCancelar: {
+  color: "#333",
+  fontWeight: "bold",
+  fontSize: 16,
+},
   saldo: {
     fontSize: 26,
     fontWeight: "bold",
@@ -319,7 +445,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 4,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   cardImageContainer: {
     width: "100%",
@@ -333,7 +459,7 @@ const styles = StyleSheet.create({
   cardContent: {
     padding: 16,
     height: 160,
-    justifyContent: 'space-between',
+    justifyContent: "space-between",
   },
   cardTitleText: {
     fontWeight: "bold",
@@ -346,12 +472,44 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   cardButton: {
-    width: '60%',
+    width: "60%",
   },
   divider: {
     padding: 1,
     backgroundColor: "#F0F1F5",
     width: "100%",
     marginVertical: 10,
+  },
+  Cabecalho: {
+    paddingTop: 40,
+    width: "100%",
+    height: "18%",
+    backgroundColor: "#810AD0",
+    paddingHorizontal: 25,
+    paddingVertical: 10,
+    gap: 30,
+  },
+
+  PerfilIcon: {
+    backgroundColor: "#8A2BE2",
+    fontSize: FontScaleSAJ(24),
+    color: "#ffffff",
+    borderRadius: 50,
+    padding: 15,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  BotaoIcon: {
+    fontSize: FontScaleSAJ(24),
+    color: "#ffffff",
+    borderRadius: 50,
+    padding: 5,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  Pressed: {
+    transform: [{ scale: 0.98 }],
   },
 });
